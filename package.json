@@ -23,7 +23,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "http-server": "^0.10.0",
     "uglify-js": "^3.1.2",
-    "value-animator": "git+https://github.com/yyued/value-animator.git",
+    "value-animator": "https://github.com/yyued/value-animator/archive/refs/heads/master.tar.gz",
     "webpack": "^3.6.0"
   }
 }
