@@ -35,7 +35,7 @@
         body {
             background-color: var(--bg);
             background-image:
-                linear-gradient(rgba(3, 7, 18, 0.8), rgba(3, 7, 18, 0.8)),
+                linear-gradient(rgba(3, 7, 18, 0.85), rgba(3, 7, 18, 0.85)),
                 url('./bg.png');
             background-size: cover;
             background-position: center;
@@ -47,6 +47,14 @@
             align-items: center;
             padding: 40px 20px;
             overflow-x: hidden;
+            opacity: 0;
+            animation: fadeInPage 1.5s ease-out forwards;
+        }
+
+        @keyframes fadeInPage {
+            to {
+                opacity: 1;
+            }
         }
 
         /* VEO3 Aesthetic: Melancholic & Beautiful animations */
@@ -58,17 +66,17 @@
             }
 
             50% {
-                transform: translateY(-10px) rotate(1deg);
+                transform: translateY(-15px) rotate(1deg);
             }
         }
 
         .nebula-glow {
             position: fixed;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
             z-index: -1;
-            filter: blur(80px);
+            filter: blur(100px);
             pointer-events: none;
         }
 
@@ -115,6 +123,7 @@
             font-weight: 800;
             letter-spacing: -1px;
             background: var(--nebula);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 5px;
@@ -172,6 +181,13 @@
             position: relative;
             border: 1px solid var(--border);
             box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5);
+            transition: 0.3s;
+        }
+
+        #canvas-container.drag-over {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.1);
+            transform: scale(1.02);
         }
 
         #demoCanvas {
@@ -381,10 +397,42 @@
             font-weight: 800;
             vertical-align: middle;
         }
+
+        #backToTop {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.4);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 1000;
+        }
+
+        #backToTop.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 
 <body>
+
+    <button id="backToTop" onclick="scrollToTop()">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+        </svg>
+    </button>
 
     <div class="nebula-glow" style="top: -10%; left: -10%;"></div>
     <div class="nebula-glow" style="bottom: -10%; right: -10%;"></div>
@@ -468,6 +516,8 @@
                     <div class="asset-item" onclick="loadSVGA('./tests/samples/halloween.svga', this)">هالوين</div>
                     <div class="asset-item" onclick="loadSVGA('./tests/samples/TwitterHeart.svga', this)">قلب</div>
                     <div class="asset-item" onclick="loadSVGA('./tests/samples/Walkthrough.svga', this)">مشغل</div>
+                    <div class="asset-item" onclick="loadSVGA('./tests/samples/HamburgerArrow.svga', this)">سهم</div>
+                    <div class="asset-item" onclick="loadSVGA('./tests/samples/PinJump.svga', this)">قفزة</div>
                 </div>
             </div>
 
@@ -495,7 +545,7 @@
                 <h3>
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826 3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
                         </path>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -582,8 +632,28 @@
             }, 'banner');
         }
 
+        // Initial load
         window.onload = function () {
             loadSVGA('./tests/samples/rose.svga');
+
+            // Setup Drag & Drop
+            var container = document.getElementById('canvas-container');
+            container.ondragover = function (e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            };
+            container.ondragleave = function () {
+                this.classList.remove('drag-over');
+            };
+            container.ondrop = function (e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                var file = e.dataTransfer.files[0];
+                if (file) {
+                    var url = URL.createObjectURL(file);
+                    loadSVGA(url);
+                }
+            };
         };
 
         document.getElementById('progressBar').onclick = function (e) {
@@ -591,6 +661,20 @@
             var percentage = (e.clientX - rect.left) / rect.width;
             player.stepToPercentage(percentage * 100, true);
         };
+
+        // Back to top logic
+        window.onscroll = function () {
+            var btn = document.getElementById('backToTop');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.classList.add('visible');
+            } else {
+                btn.classList.remove('visible');
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
     </script>
 </body>
