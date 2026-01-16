@@ -2,13 +2,10 @@
     "version": 2,
     "public": true,
     "cleanUrls": true,
-    "framework": null,
-    "buildCommand": null,
-    "installCommand": "echo 'No install needed'",
     "rewrites": [
         {
-            "source": "/",
-            "destination": "/index.html"
+            "source": "/(.*)",
+            "destination": "/$1"
         }
     ]
 }
